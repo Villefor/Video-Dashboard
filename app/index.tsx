@@ -16,12 +16,11 @@ import { Link } from 'expo-router';
 import { Video } from '../types';
 import { baseURL } from '../constants/BaseUrl';
 
-// Get screen dimensions
 const { width: screenWidth } = Dimensions.get('window');
 
-// Calculate item width based on screen size
-const ITEM_WIDTH = screenWidth * 0.9; // 90% of screen width
-const ITEM_HEIGHT = ITEM_WIDTH * 0.5625; // 16:9 aspect ratio for thumbnail
+
+const ITEM_WIDTH = screenWidth * 0.8; 
+const ITEM_HEIGHT = ITEM_WIDTH * 1.5625; 
 
 const HomeScreen = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -112,7 +111,7 @@ const HomeScreen = () => {
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
-          contentContainerStyle={styles.listContent} // Center content
+          contentContainerStyle={styles.listContent} 
         />
       )}
     </View>
@@ -126,6 +125,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   itemContainer: {
+    marginTop: '10%',
     alignItems: 'center',
     width: ITEM_WIDTH, 
     marginBottom: 20,
@@ -137,8 +137,6 @@ const styles = StyleSheet.create({
   thumbnail: {
     width: ITEM_WIDTH, 
     height: ITEM_HEIGHT, 
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
   },
   textContainer: {
     padding: 10,
