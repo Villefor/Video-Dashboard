@@ -4,11 +4,11 @@
     "slug": "video-dashboard",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/netshowme-logo.jpeg",
+    "icon": "./assets/images/netshowme-logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/netshowme-logo.jpeg",
+      "image": "./assets/images/netshowme-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,14 +17,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/netshowme-logo.jpeg",
+        "foregroundImage": "./assets/images/netshowme-logo.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/netshowme-logo.jpeg"
+      "favicon": "./assets/images/netshowme-logo.png"
     },
     "plugins": [
       "expo-router",
