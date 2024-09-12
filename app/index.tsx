@@ -8,10 +8,20 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  Alert
+  Alert,
+  Dimensions
 } from 'react-native';
 import ContentLoader, { Rect } from 'react-content-loader/native';
+import { Link } from 'expo-router';
 import { Video } from '../types';
+import { baseURL } from '../constants/BaseUrl';
+
+// Get screen dimensions
+const { width: screenWidth } = Dimensions.get('window');
+
+// Calculate item width based on screen size
+const ITEM_WIDTH = screenWidth * 0.9; // 90% of screen width
+const ITEM_HEIGHT = ITEM_WIDTH * 0.5625; // 16:9 aspect ratio for thumbnail
 
 const HomeScreen = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -20,11 +30,6 @@ const HomeScreen = () => {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [hasMore, setHasMore] = useState(true);
-
-  const baseURL =
-    Platform.OS === 'android'
-      ? 'http://10.0.2.2:3000'
-      : 'http://localhost:3000';
 
   const fetchVideos = async () => {
     try {
@@ -61,18 +66,26 @@ const HomeScreen = () => {
   }, [hasMore, loading, perPage, videos]);
 
   const renderItem = ({ item }: { item: Video }) => (
-    <TouchableOpacity onPress={() => console.log('Implement navigation passing id for VideoDetails')}>
-      <View style={styles.itemContainer}>
-        <Image
-          source={{ uri: item.thumbnail }}
-          style={styles.thumbnail}
-        />
-        <View style={styles.textContainer}>
-          <Text style={styles.views}>Visualizações - {item.views}</Text>
-          <Text style={styles.title}>{item.title}</Text>
+    <Link
+      href={{
+        pathname: '/VideoDetails', 
+        params: { videoId: item.id },
+      }}
+      asChild 
+    >
+      <TouchableOpacity>
+        <View style={styles.itemContainer}>
+          <Image
+            source={{ uri: item.thumbnail }}
+            style={styles.thumbnail}
+          />
+          <View style={styles.textContainer}>
+            <Text style={styles.views}>Visualizações - {item.views}</Text>
+            <Text style={styles.title}>{item.title}</Text>
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </Link>
   );
 
   return (
@@ -80,17 +93,16 @@ const HomeScreen = () => {
       {loading && !videos.length ? (
         <ContentLoader
           speed={2}
-          width={400}
-          height={150}
-          viewBox="0 0 400 150"
+          width={ITEM_WIDTH}
+          height={ITEM_HEIGHT + 80}
+          viewBox={`0 0 ${ITEM_WIDTH} ${ITEM_HEIGHT + 80}`}
           backgroundColor="#f3f3f3"
           foregroundColor="#ecebeb"
           style={styles.loader}
         >
-          <Rect x="0" y="0" rx="10" ry="10" width="380" height="120" />
-          <Rect x="0" y="130" rx="4" ry="4" width="180" height="20" />
-          <Rect x="0" y="160" rx="4" ry="4" width="140" height="20" />
-          <Rect x="0" y="190" rx="4" ry="4" width="100" height="20" />
+          <Rect x="0" y="0" rx="10" ry="10" width={ITEM_WIDTH} height={ITEM_HEIGHT} />
+          <Rect x="0" y={ITEM_HEIGHT + 10} rx="4" ry="4" width="80%" height="20" />
+          <Rect x="0" y={ITEM_HEIGHT + 40} rx="4" ry="4" width="60%" height="20" />
         </ContentLoader>
       ) : (
         <FlatList
@@ -100,6 +112,7 @@ const HomeScreen = () => {
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
+          contentContainerStyle={styles.listContent} // Center content
         />
       )}
     </View>
@@ -114,36 +127,37 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     alignItems: 'center',
-    width: '50%',
-    marginBottom: 10,
+    width: ITEM_WIDTH, 
+    marginBottom: 20,
     borderRadius: 10,
     backgroundColor: '#f9f9f9',
     overflow: 'hidden',
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    paddingBottom: 10,
-    elevation: 2 
+    elevation: 2, 
   },
   thumbnail: {
-    width: '100%',
-    height: 300,
+    width: ITEM_WIDTH, 
+    height: ITEM_HEIGHT, 
     borderTopLeftRadius: 15,
-    borderTopRightRadius: 15
+    borderTopRightRadius: 15,
   },
   textContainer: {
-    padding: 10
+    padding: 10,
+    alignItems: 'center', 
   },
   title: {
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   views: {
     fontSize: 14,
-    color: '#666'
+    color: '#666',
   },
   loader: {
-    marginVertical: 10
-  }
+    marginVertical: 10,
+  },
+  listContent: {
+    alignItems: 'center', 
+  },
 });
 
 export default HomeScreen;

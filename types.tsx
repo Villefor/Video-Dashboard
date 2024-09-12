@@ -8,4 +8,5 @@ export interface Video {
   views: number;
   likes: number;
   url: string;
+  isPlaying?: boolean;
 }
