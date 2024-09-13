@@ -16,7 +16,7 @@ Features
    npx json-server db.json (to make localhost available)
    ```
 
-2. Start the app - (Remember that localhost and baseUrl for db.json can change based on the device used for the app, you can change it if you want in constants/baseUrl.tsx)
+2. Start the app - ( Remember that localhost and base URL for db.json can change based on the device used for the app, you can change it if you want in constants/baseUrl.tsx )
 
    ```bash
     npx expo start
