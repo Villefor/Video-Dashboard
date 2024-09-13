@@ -1,4 +1,3 @@
-// screens/VideoDetailScreen.tsx
 import React from 'react';
 import { Text, View, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
@@ -95,7 +94,6 @@ const styles = StyleSheet.create({
   descriptionToggle: {
     fontSize: 16,
     color: '#1E90FF',
-    // marginVertical: 10,
   },
   descriptionContainer: {
     flexDirection: 'column',

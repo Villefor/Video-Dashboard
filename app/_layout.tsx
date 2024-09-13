@@ -8,14 +8,14 @@ export default function RootLayout() {
         name="index"
         options={{
           title: 'Home Screen',
-          headerTitle: () => <CustomHeader />, // Use CustomHeader
+          headerTitle: () => <CustomHeader />, 
         }}
       />
       <Stack.Screen
         name="VideoDetails"
         options={{
           title: 'Video Details',
-          headerTitle: () => <CustomHeader />, // Same header for VideoDetails
+          headerTitle: () => <CustomHeader />, 
         }}
       />
     </Stack>

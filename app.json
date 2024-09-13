@@ -8,7 +8,7 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/netshowme-logo.png",
+      "image": "./assets/images/netshowme-splash.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

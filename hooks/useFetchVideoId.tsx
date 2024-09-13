@@ -15,7 +15,6 @@ export const useFetchVideoId = (videoId: string) => {
         setVideo(data);
         setLikes(data.likes);
         setViews(data.views);
-
         await fetch(`${baseURL}/videos/${videoId}`, {
           method: 'PATCH',
           headers: {

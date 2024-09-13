@@ -1,95 +1,18 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import {
-  Platform,
-  FlatList,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  Alert,
-  Dimensions
-} from 'react-native';
+import React from 'react';
+import { View, StyleSheet, FlatList, ActivityIndicator, Dimensions } from 'react-native';
 import ContentLoader, { Rect } from 'react-content-loader/native';
-import { Link } from 'expo-router';
-import { Video } from '../types';
-import { baseURL } from '../constants/BaseUrl';
+import { VideoItem } from '../components/VideoCard';
+import { useFetchVideos } from '../hooks/useFetchVideos';
 
-const { width: screenWidth } = Dimensions.get('window');
-
-
-const ITEM_WIDTH = screenWidth * 0.8; 
-const ITEM_HEIGHT = ITEM_WIDTH * 1.5625; 
+const ITEM_WIDTH = Dimensions.get('window').width * 0.8;
+const ITEM_HEIGHT = ITEM_WIDTH * 1.5625;
 
 const HomeScreen = () => {
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [displayedVideos, setDisplayedVideos] = useState<Video[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [hasMore, setHasMore] = useState(true);
-
-  const fetchVideos = async () => {
-    try {
-      const response = await fetch(`${baseURL}/videos`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data: Video[] = await response.json();
-      setVideos(data);
-      setHasMore(data.length > 0);
-      setDisplayedVideos(data.slice(0, perPage));
-    } catch (error) {
-      console.error('Error fetching videos:', error);
-      Alert.alert('Error', 'Unable to fetch videos. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchVideos();
-  }, []);
-
-  const loadMore = useCallback(() => {
-    if (hasMore && !loading) {
-      setPage(prevPage => {
-        const newPage = prevPage + 1;
-        const newDisplayedVideos = videos.slice(0, newPage * perPage);
-        setDisplayedVideos(newDisplayedVideos);
-        setHasMore(newDisplayedVideos.length < videos.length);
-        return newPage;
-      });
-    }
-  }, [hasMore, loading, perPage, videos]);
-
-  const renderItem = ({ item }: { item: Video }) => (
-    <Link
-      href={{
-        pathname: '/VideoDetails', 
-        params: { videoId: item.id },
-      }}
-      asChild 
-    >
-      <TouchableOpacity>
-        <View style={styles.itemContainer}>
-          <Image
-            source={{ uri: item.thumbnail }}
-            style={styles.thumbnail}
-          />
-          <View style={styles.textContainer}>
-            <Text style={styles.views}>Visualizações - {item.views}</Text>
-            <Text style={styles.title}>{item.title}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    </Link>
-  );
+  const { displayedVideos, loading, loadMore, hasMore } = useFetchVideos(10);
 
   return (
     <View style={styles.container}>
-      {loading && !videos.length ? (
+      {loading && !displayedVideos.length ? (
         <ContentLoader
           speed={2}
           width={ITEM_WIDTH}
@@ -107,11 +30,11 @@ const HomeScreen = () => {
         <FlatList
           data={displayedVideos}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
+          renderItem={({ item, index }) => <VideoItem video={item} index={index} />}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
-          contentContainerStyle={styles.listContent} 
+          ListFooterComponent={hasMore ? <ActivityIndicator size="large" color="#0000ff" /> : null}
+          contentContainerStyle={styles.listContent}
         />
       )}
     </View>
@@ -124,37 +47,11 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#fff',
   },
-  itemContainer: {
-    marginTop: '10%',
-    alignItems: 'center',
-    width: ITEM_WIDTH, 
-    marginBottom: 20,
-    borderRadius: 10,
-    backgroundColor: '#f9f9f9',
-    overflow: 'hidden',
-    elevation: 2, 
-  },
-  thumbnail: {
-    width: ITEM_WIDTH, 
-    height: ITEM_HEIGHT, 
-  },
-  textContainer: {
-    padding: 10,
-    alignItems: 'center', 
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  views: {
-    fontSize: 14,
-    color: '#666',
-  },
   loader: {
     marginVertical: 10,
   },
   listContent: {
-    alignItems: 'center', 
+    alignItems: 'center',
   },
 });
 
